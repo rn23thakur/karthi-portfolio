@@ -56,8 +56,22 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--sodium); outlin
 .hero-line { margin: 4px 0 0; color: var(--muted); font-family: var(--body); font-weight: 500; font-size: 17px; line-height: 1.55; text-wrap: balance; }
 .lede { margin: 0; max-width: 32em; color: var(--muted); font-size: 17px; line-height: 1.55; }
 .cta-row { display: flex; align-items: center; gap: 18px; margin-top: 14px; }
-.play { flex: 0 0 auto; width: 64px; height: 64px; border-radius: 50%; border: 1px solid var(--paper); background: var(--ground); display: flex; align-items: center; justify-content: center; }
-a.play:hover, .cta-row a:hover .play { border-color: var(--sodium); color: var(--sodium); }
+.cta-row a { display: flex; align-items: center; gap: 18px; position: relative; }
+@keyframes text-glow-pulse {
+  0%, 100% { text-shadow: 0 0 8px rgba(205,183,92,0.5), 0 0 18px rgba(205,183,92,0.25); }
+  50%       { text-shadow: 0 0 14px rgba(205,183,92,0.85), 0 0 32px rgba(205,183,92,0.45); }
+}
+.cta-row .mono { position: relative; color: var(--sodium); animation: text-glow-pulse 2.4s ease-in-out infinite; transition: color 0.25s; }
+.cta-row .mono::after { content: ''; position: absolute; bottom: -3px; left: 0; width: 100%; height: 1px; background: var(--sodium); opacity: 0.4; transition: opacity 0.3s ease; }
+.cta-row a:hover .mono { color: var(--sodium); animation: none; text-shadow: 0 0 18px rgba(205,183,92,0.9), 0 0 36px rgba(205,183,92,0.5); }
+.cta-row a:hover .mono::after { opacity: 1; }
+@keyframes pulse-ring {
+  0%   { box-shadow: 0 0 0 0 rgba(205, 183, 92, 0.55); }
+  70%  { box-shadow: 0 0 0 14px rgba(205, 183, 92, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(205, 183, 92, 0); }
+}
+.play { flex: 0 0 auto; width: 64px; height: 64px; border-radius: 50%; border: 1.5px solid var(--sodium); background: var(--ground); display: flex; align-items: center; justify-content: center; color: var(--sodium); animation: pulse-ring 2.4s cubic-bezier(0.4,0,0.6,1) infinite; transition: background 0.2s, border-color 0.2s, color 0.2s; }
+.cta-row a:hover .play { background: var(--sodium); color: var(--ground); animation: none; border-color: var(--sodium); }
 .rail { position: absolute; top: 50%; left: max(20px, env(safe-area-inset-left, 0px)); transform: translateY(-50%); display: none; flex-direction: column; gap: 22px; }
 .rail a { writing-mode: vertical-rl; transform: rotate(180deg); padding: 6px 12px; }
 .rail a:hover { color: var(--sodium); }
@@ -80,7 +94,7 @@ a.play:hover, .cta-row a:hover .play { border-color: var(--sodium); color: var(-
 .case { display: flex; flex-direction: column; min-width: 0; background: var(--surface); border: 1px solid var(--line); transition: border-color 0.2s; }
 .case:hover { border-color: var(--sodium); }
 .thumb { position: relative; display: block; aspect-ratio: 16 / 10; max-width: 100%; background-color: var(--raise); background-position: center; background-size: cover; border-bottom: 1px solid var(--line); }
-.thumb .tag { position: absolute; top: 12px; left: 12px; padding: 4px 8px; background: var(--ground); color: var(--sodium); }
+.thumb .tag { position: absolute; bottom: 12px; left: 12px; padding: 4px 8px; background: var(--ground); color: var(--sodium); }
 .thumb .glyph { position: absolute; right: 12px; bottom: 12px; width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--paper); background: var(--ground); display: flex; align-items: center; justify-content: center; }
 .thumb.is-pending .glyph { display: none; }
 .thumb iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
@@ -128,25 +142,34 @@ a.play:hover, .cta-row a:hover .play { border-color: var(--sodium); color: var(-
 .ugc-still { position: relative; margin: 0; min-height: 0; padding-bottom: 33px; background-color: var(--raise); background-position: center; background-size: contain; background-repeat: no-repeat; background-origin: content-box; }
 .ugc-still .tag { position: absolute; left: 0; right: 0; bottom: 0; padding: 8px 12px; line-height: 16px; background: var(--ground); border-top: 1px solid var(--line); color: var(--sodium); }
 .ugc-still.is-pending .tag { color: var(--muted); }
+.ugc-version { display: grid; grid-template-columns: 1fr 2fr; gap: 8px; padding-top: 10px; border-top: 1px solid var(--line); }
+.ugc-version-assets { display: grid; grid-template-rows: 1fr 1fr; gap: 8px; min-height: 0; }
+.ugc-version-assets .ugc-still { min-height: 0; background-size: cover; }
+.ugc-char-still { background-size: contain; background-color: #fff; padding-bottom: 0; }
+.ugc-char-still .tag { top: auto; left: 12px; right: auto; bottom: 12px; border-top: 0; padding: 4px 8px; }
 
-/* Research rows */
-.studies { display: flex; flex-direction: column; border-top: 1px solid var(--line); }
-.study { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px 32px; align-items: start; padding-block: 28px; border-bottom: 1px solid var(--line); }
-.study > .mono { padding-top: 4px; }
-.study-main { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
-.study h3 { margin: 0; font-size: clamp(32px, 3.4vw, 46px); }
-.study p { margin: 0; max-width: 42em; color: var(--muted); font-size: 16px; }
-@media (max-width: 760px) { .study { grid-template-columns: minmax(0, 1fr); } }
+/* Research cards */
+.studies { display: flex; flex-direction: column; gap: 20px; }
+.study { display: flex; flex-direction: column; gap: 20px; padding: 24px 26px 22px; background: var(--surface); border: 1px solid var(--line); transition: border-color 0.2s; }
+.study:hover { border-color: var(--sodium); }
+.study-main { flex: 1; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.study h3 { margin: 0; font-size: clamp(28px, 3vw, 42px); }
+.study p { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.6; }
+.study-reels { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.study-reels .thumb { aspect-ratio: 9 / 16; border: 1px solid var(--line); }
 
 /* Social tiles */
-.tiles { display: flex; flex-wrap: wrap; gap: 20px; }
-.tile { flex: 1 1 220px; max-width: 300px; min-width: 0; display: flex; flex-direction: column; background: var(--surface); border: 1px solid var(--line); transition: border-color 0.2s; }
+.tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.tile { min-width: 0; display: flex; flex-direction: column; background: var(--surface); border: 1px solid var(--line); transition: border-color 0.2s; }
 .tile:hover { border-color: var(--sodium); }
-.tile .thumb { aspect-ratio: 9 / 16; }
+.tile .thumb { aspect-ratio: 16 / 9; }
+.tile:nth-child(3) { grid-column: 2; grid-row: 1 / span 2; }
+.tile:nth-child(3) .thumb { flex: 1; aspect-ratio: unset; min-height: 0; }
 .tile-body { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; padding: 16px 18px 18px; }
 .tile-body .case-meta { align-self: stretch; }
 .tile h3 { margin: 0; font-size: 30px; }
 .tile p { margin: 0; color: var(--muted); font-size: 14px; }
+@media (max-width: 700px) { .tiles { grid-template-columns: 1fr; } .tile:nth-child(3) { grid-column: auto; grid-row: auto; } .tile:nth-child(3) .thumb { flex: none; aspect-ratio: 9 / 16; } }
 
 /* Index of work */
 .chapter { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 24px 56px; padding-block: 44px; border-top: 1px solid var(--line); }
@@ -234,7 +257,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
     <div class="hero-copy">
       <span class="mono accent">AI filmmaker · Editor</span>
       <h1 class="name display">Karthi<br>Venkat<span>.</span></h1>
-      <p class="hero-line">I’m a filmmaker and editor who makes films with AI and cuts them as if they were shot on a real set. I came to film through 5+ years of design and editing, and what I care about most is how a story gets told: the pace, the cut, the moment that lands. I’m usually the calmest person in the room, mostly because I’ve already rendered a backup.</p>
+      <p class="hero-line">Live-action filmmaker turned AI filmmaker, and still both. I’ve directed on real sets and now generate with AI, but I edit everything with the same instincts: pace, the cut, the moment that lands.</p>
       <a class="cta-row" href="#films">
         <span class="play" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M12 4v14M6 12l6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></span>
         <span class="mono">See the portfolio</span>
@@ -244,8 +267,6 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
   <nav class="rail mono" aria-label="Profiles">
     <a data-link="linkedin" data-hide-empty>LinkedIn</a>
     <a data-link="youtube" data-hide-empty>YouTube</a>
-    <a data-link="instagram" data-hide-empty>Instagram</a>
-    <a data-link="behance" data-hide-empty>Behance</a>
   </nav>
 </section>
 
@@ -253,8 +274,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
   <div class="wrap">
     <div class="cat-head">
       <h2 class="display">Films &amp; music videos</h2>
-      <span class="mono accent">05</span>
-      <p>AI shorts, a brand film, a music video, and one live-action short.</p>
+      <p>AI shorts, a brand film, a music video, and one live-action short film.</p>
     </div>
     <div class="cases">
 
@@ -281,7 +301,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
         <div class="case-body">
           <div class="case-meta mono"><span>Short film</span><span>Jun 2026</span></div>
           <h3 class="display">Fragments of the Decade</h3>
-          <p>[One-line logline]</p>
+          <p>A film about the boy, the man, and everything lost between.</p>
           <dl class="facts mono">
             <div><dt>Role</dt><dd>Written, directed, generated and edited</dd></div>
             <div><dt>Models</dt><dd>Nano Banana 2, GPT 2, Seedance 2.0 via invideo Agent One</dd></div>
@@ -347,7 +367,6 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
   <div class="wrap">
     <div class="cat-head">
       <h2 class="display">Commercials</h2>
-      <span class="mono accent">06</span>
       <p>Brand ads for invideo's Copilot campaign, a spec ad, and two live-action ads.</p>
     </div>
     <div class="cases two">
@@ -361,10 +380,27 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
           <h3 class="display">Transparent Labs</h3>
           <p>An unsolicited spot for Transparent Labs creatine.</p>
           <dl class="facts mono">
-            <div><dt>Role</dt><dd>Made by Karthi</dd></div>
+            <div><dt>Role</dt><dd>Written, Generated and Directed</dd></div>
             <div><dt>Models</dt><dd>Nano Banana 2 · Kling 3.0</dd></div>
           </dl>
           <a class="watch mono" data-link="transparent"><span class="ready">Watch ↗</span><span class="pending">Link soon</span></a>
+        </div>
+      </article>
+
+
+      <article class="case">
+        <a class="thumb" data-link="casonacho" data-thumb aria-label="Watch the Caso Nacho ad">
+          <span class="glyph" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="currentColor"></path></svg></span>
+        </a>
+        <div class="case-body">
+          <div class="case-meta mono"><span>Copilot campaign</span><span>Sep 2025</span></div>
+          <h3 class="display">Caso Nacho</h3>
+          <p>A brand ad from invideo's campaign showing Copilot can make a million-dollar ad.</p>
+          <dl class="facts mono">
+            <div><dt>Role</dt><dd>Concept, generation and editing</dd></div>
+            <div><dt>Models</dt><dd>invideo Copilot</dd></div>
+          </dl>
+          <a class="watch mono" data-link="casonacho"><span class="ready">Watch ↗</span><span class="pending">Link soon</span></a>
         </div>
       </article>
 
@@ -383,23 +419,6 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
           <a class="watch mono" data-link="bouqs"><span class="ready">Watch ↗</span><span class="pending">Link soon</span></a>
         </div>
       </article>
-
-      <article class="case">
-        <a class="thumb" data-link="casonacho" data-thumb aria-label="Watch the Caso Nacho ad">
-          <span class="glyph" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="currentColor"></path></svg></span>
-        </a>
-        <div class="case-body">
-          <div class="case-meta mono"><span>Copilot campaign</span><span>Sep 2025</span></div>
-          <h3 class="display">Caso Nacho</h3>
-          <p>A brand ad from invideo's campaign showing Copilot can make a million-dollar ad.</p>
-          <dl class="facts mono">
-            <div><dt>Role</dt><dd>Concept, generation and editing</dd></div>
-            <div><dt>Models</dt><dd>invideo Copilot</dd></div>
-          </dl>
-          <a class="watch mono" data-link="casonacho"><span class="ready">Watch ↗</span><span class="pending">Link soon</span></a>
-        </div>
-      </article>
-
       <article class="case">
         <a class="thumb" data-link="ouidad" data-thumb aria-label="Watch the Ouidad ad">
           <span class="glyph" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="currentColor"></path></svg></span>
@@ -457,9 +476,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
   <div class="wrap">
     <div class="cat-head">
       <h2 class="display">UGC</h2>
-      <span class="mono accent">02</span>
       <p>Winning creator-style ads, rebuilt for Spain and Japan with invideo Agent One.</p>
-      <a class="watch mono ugc-head-link" data-link="gruns"><span class="ready">Watch the full guide ↗</span><span class="pending">Link soon</span></a>
     </div>
     <div class="ugc-grid">
 
@@ -469,28 +486,22 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
           <span class="mono muted">GPT 1.5, Seedance 2.0 via invideo Agent One</span>
         </div>
         <a class="thumb ugc-original" data-link="ugc1" data-thumb aria-label="Watch UGC ad 01, Original">
-            <span class="tag mono">Original</span>
-            <span class="glyph" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="currentColor"></path></svg></span>
-          </a>
-        <div class="ugc-row">
+          <span class="tag mono">Original</span>
+          <span class="glyph" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="currentColor"></path></svg></span>
+        </a>
+        <div class="ugc-version">
           <a class="thumb ugc-video" data-link="ugc1es" data-thumb aria-label="Watch UGC ad 01, Spanish">
             <span class="tag mono">Spanish</span>
             <span class="glyph" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="currentColor"></path></svg></span>
           </a>
-          <div class="ugc-stills">
-            <figure class="ugc-still" data-still="ugc1_es_character"><figcaption class="tag mono">Character</figcaption></figure>
-            <figure class="ugc-still" data-still="ugc1_es_location"><figcaption class="tag mono">Location</figcaption></figure>
-          </div>
+          <figure class="ugc-still ugc-char-still" data-still="ugc1_es_character"><figcaption class="tag mono">Character</figcaption></figure>
         </div>
-        <div class="ugc-row">
-          <div class="ugc-stills">
-            <figure class="ugc-still" data-still="ugc1_ja_character"><figcaption class="tag mono">Character</figcaption></figure>
-            <figure class="ugc-still" data-still="ugc1_ja_location"><figcaption class="tag mono">Location</figcaption></figure>
-          </div>
+        <div class="ugc-version">
           <a class="thumb ugc-video" data-link="ugc1ja" data-thumb aria-label="Watch UGC ad 01, Japanese">
             <span class="tag mono">Japanese</span>
             <span class="glyph" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="currentColor"></path></svg></span>
           </a>
+          <figure class="ugc-still ugc-char-still" data-still="ugc1_ja_character"><figcaption class="tag mono">Character</figcaption></figure>
         </div>
       </article>
 
@@ -500,28 +511,22 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
           <span class="mono muted">GPT 1.5, Seedance 2.0 via invideo Agent One</span>
         </div>
         <a class="thumb ugc-original" data-link="ugc2" data-thumb aria-label="Watch UGC ad 02, Original">
-            <span class="tag mono">Original</span>
-            <span class="glyph" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="currentColor"></path></svg></span>
-          </a>
-        <div class="ugc-row">
+          <span class="tag mono">Original</span>
+          <span class="glyph" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="currentColor"></path></svg></span>
+        </a>
+        <div class="ugc-version">
           <a class="thumb ugc-video" data-link="ugc2es" data-thumb aria-label="Watch UGC ad 02, Spanish">
             <span class="tag mono">Spanish</span>
             <span class="glyph" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="currentColor"></path></svg></span>
           </a>
-          <div class="ugc-stills">
-            <figure class="ugc-still" data-still="ugc2_es_character"><figcaption class="tag mono">Character</figcaption></figure>
-            <figure class="ugc-still" data-still="ugc2_es_location"><figcaption class="tag mono">Location</figcaption></figure>
-          </div>
+          <figure class="ugc-still ugc-char-still" data-still="ugc2_es_character"><figcaption class="tag mono">Character</figcaption></figure>
         </div>
-        <div class="ugc-row">
-          <div class="ugc-stills">
-            <figure class="ugc-still" data-still="ugc2_ja_character"><figcaption class="tag mono">Character</figcaption></figure>
-            <figure class="ugc-still" data-still="ugc2_ja_location"><figcaption class="tag mono">Location</figcaption></figure>
-          </div>
+        <div class="ugc-version">
           <a class="thumb ugc-video" data-link="ugc2ja" data-thumb aria-label="Watch UGC ad 02, Japanese">
             <span class="tag mono">Japanese</span>
             <span class="glyph" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="currentColor"></path></svg></span>
           </a>
+          <figure class="ugc-still ugc-char-still" data-still="ugc2_ja_character"><figcaption class="tag mono">Character</figcaption></figure>
         </div>
       </article>
 
@@ -533,7 +538,6 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
   <div class="wrap">
     <div class="cat-head">
       <h2 class="display">Research</h2>
-      <span class="mono accent">02</span>
       <p>Workflows I built on invideo's research desk.</p>
     </div>
     <div class="studies">
@@ -544,7 +548,6 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
           <p>AI video models lose a character’s voice from one shot to the next. After many rounds of trial and error, I arrived at two workflows that keep it consistent every time.</p>
           <div class="chips"><span class="chip role">Research</span><span class="chip">Seedance 2.0</span><span class="chip">ElevenLabs</span></div>
         </div>
-        <a class="watch mono" data-link="audio"><span class="ready">Read the write-up ↗</span><span class="pending">Write-up soon</span></a>
       </article>
       <article class="study">
         <div class="study-main">
@@ -553,7 +556,11 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
           <p>A workflow that creates product videos straight from a product page, built with the research team and now live on invideo’s site.</p>
           <div class="chips"><span class="chip role">Built the workflow</span><span class="chip">Live on invideo</span></div>
         </div>
-        <a class="watch mono" data-link="pdp"><span class="ready">See it live ↗</span><span class="pending">Link soon</span></a>
+        <div class="study-reels">
+          <a class="thumb" data-link="pdp1" data-thumb aria-label="PDP video 1"><span class="glyph" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="currentColor"></path></svg></span></a>
+          <a class="thumb" data-link="pdp2" data-thumb aria-label="PDP video 2"><span class="glyph" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="currentColor"></path></svg></span></a>
+          <a class="thumb" data-link="pdp3" data-thumb aria-label="PDP video 3"><span class="glyph" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="currentColor"></path></svg></span></a>
+        </div>
       </article>
     </div>
   </div>
@@ -562,13 +569,12 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
 <section class="cat" id="social">
   <div class="wrap">
     <div class="cat-head">
-      <h2 class="display">Social media</h2>
-      <span class="mono accent">03</span>
-      <p>Short vertical pieces made for launches and feeds.</p>
+      <h2 class="display">Social media assets</h2>
+      <p>Short pieces made for launches and feeds.</p>
     </div>
     <div class="tiles">
       <article class="tile">
-        <a class="thumb" data-link="f1" data-thumb aria-label="Watch the F1 recreation">
+        <a class="thumb" data-link="f1" data-thumb data-thumb-src="assets/thumbs/f1_sddefault.jpg" aria-label="Watch the F1 recreation">
           <span class="glyph" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="currentColor"></path></svg></span>
         </a>
         <div class="tile-body">
@@ -586,7 +592,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
           <div class="case-meta mono"><span>Limit test</span><span>Sep 2026</span></div>
           <h3 class="display">Skydive</h3>
           <p>A full freefall sequence made with Seedance 2.5 from a single character sheet.</p>
-          <span class="chip role">Made by Karthi</span>
+          <span class="chip role">Generated and Edited</span>
         </div>
       </article>
       <article class="tile">
@@ -616,7 +622,6 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
     </div>
     <div class="socials mono">
       <a data-link="linkedin" data-hide-empty>LinkedIn ↗</a>
-      <a data-link="youtube" data-hide-empty>YouTube ↗</a>
       <a data-link="instagram" data-hide-empty>Instagram ↗</a>
       <a data-link="behance" data-hide-empty>Behance ↗</a>
     </div>
@@ -657,6 +662,9 @@ const LINKS = {
   // Research
   audio: "",
   pdp: "",
+  pdp1: "https://youtube.com/shorts/7FAfLFD8wi8",
+  pdp2: "https://youtube.com/shorts/-x5MAOa7C9M",
+  pdp3: "https://youtube.com/shorts/sT3cC3oQX1I",
   // Social media
   f1: "https://youtu.be/5mIPTHVVZ6w",
   skydive: "https://youtu.be/Aq_VrW7F4kA",
@@ -664,16 +672,16 @@ const LINKS = {
   // Profiles
   linkedin: "https://www.linkedin.com/in/karthi-venkat-98b992229/",
   youtube: "",
-  instagram: "",
-  behance: ""
+  instagram: "https://www.instagram.com/film_by_karthi_venkat",
+  behance: "https://www.behance.net/karthivenkat"
 };
 
 // ── UGC character and location stills. Paste an image path or URL for each; leave "" until ready. ──
 const STILLS = {
-  ugc1_es_character: "assets/ugc/ad01-spanish-character.jpg", ugc1_es_location: "",
-  ugc1_ja_character: "", ugc1_ja_location: "",
-  ugc2_es_character: "", ugc2_es_location: "",
-  ugc2_ja_character: "", ugc2_ja_location: ""
+  ugc1_es_character: "assets/ugc/ad01-spanish-character.jpg", ugc1_es_location: "assets/ugc/ad01-spanish-location.jpg",
+  ugc1_ja_character: "assets/ugc/ad01-japanese-character.jpg", ugc1_ja_location: "assets/ugc/ad01-japanese-location.jpg",
+  ugc2_es_character: "assets/ugc/ad02-spanish-character.jpg", ugc2_es_location: "",
+  ugc2_ja_character: "assets/ugc/ad02-japanese-character.jpg", ugc2_ja_location: ""
 };
 
 function youtubeId(url) {
@@ -690,7 +698,20 @@ document.querySelectorAll('[data-link]').forEach(function (el) {
     if (el.hasAttribute('data-thumb')) {
       const id = youtubeId(url);
       if (id) {
-        el.style.backgroundImage = 'url(https://i.ytimg.com/vi/' + id + '/hqdefault.jpg)';
+        if (el.dataset.thumbSrc) {
+          el.style.backgroundImage = 'url(' + el.dataset.thumbSrc + ')';
+        } else {
+          const isShort = url.includes('shorts/');
+          const thumbQueue = isShort
+            ? ['oar2.jpg', 'hqdefault.jpg']
+            : ['maxresdefault.jpg', 'sddefault.jpg', 'hqdefault.jpg'];
+          (function tryNext(i) {
+            const img = new Image();
+            img.onload = function() { el.style.backgroundImage = 'url(' + img.src + ')'; };
+            img.onerror = function() { if (i + 1 < thumbQueue.length) tryNext(i + 1); };
+            img.src = 'https://i.ytimg.com/vi/' + id + '/' + thumbQueue[i];
+          }(0));
+        }
         // Play YouTube films in place instead of opening a new tab
         el.addEventListener('click', function (e) {
           e.preventDefault();
